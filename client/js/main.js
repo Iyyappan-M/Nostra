@@ -211,6 +211,30 @@ function checkLoginStatus() {
         // Set initial
         const initial = user.email.charAt(0).toUpperCase();
         if (profileIcon) profileIcon.innerText = initial;
+
+        // Add Product Link for Subscribed Users/Admins
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const existingAddProduct = document.getElementById('add-product-link');
+        
+        if (dropdownMenu && !existingAddProduct && (user.isSubscribed || user.role === 'admin')) {
+            const ordersLink = Array.from(dropdownMenu.querySelectorAll('a')).find(a => a.href.includes('orders.html'));
+            const addProductLink = document.createElement('a');
+            addProductLink.href = 'admin-dashboard.html';
+            addProductLink.className = 'dropdown-item';
+            addProductLink.id = 'add-product-link';
+            addProductLink.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Product';
+            
+            if (ordersLink) {
+                ordersLink.after(addProductLink);
+            } else {
+                const logoutItem = document.getElementById('logout-btn');
+                if (logoutItem) {
+                    dropdownMenu.insertBefore(addProductLink, logoutItem);
+                } else {
+                    dropdownMenu.appendChild(addProductLink);
+                }
+            }
+        }
     } else {
         if (loginLink) loginLink.style.display = 'block';
         if (profileContainer) profileContainer.style.display = 'none';

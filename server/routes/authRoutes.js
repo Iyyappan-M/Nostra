@@ -53,6 +53,7 @@ router.post('/register', async (req, res) => {
             role: user.role,
             profileCompleted: user.profileCompleted,
             isSubscribed: user.isSubscribed,
+            subscriptionPlan: user.subscriptionPlan,
             token: generateToken(user._id),
         });
 
@@ -83,6 +84,7 @@ router.post('/login', async (req, res) => {
                 role: user.role,
                 profileCompleted: user.profileCompleted,
                 isSubscribed: user.isSubscribed,
+                subscriptionPlan: user.subscriptionPlan,
                 token: generateToken(user._id),
             });
         } else {
@@ -125,6 +127,7 @@ router.put('/profile', async (req, res) => {
             role: user.role,
             profileCompleted: user.profileCompleted,
             isSubscribed: user.isSubscribed,
+            subscriptionPlan: user.subscriptionPlan,
             gender: user.gender,
             ageCategory: user.ageCategory,
             preference: user.preference,
@@ -139,10 +142,10 @@ router.put('/profile', async (req, res) => {
 // @route PUT /api/auth/subscribe-proof
 router.put('/subscribe-proof', async (req, res) => {
     try {
-        const { userId, subscriptionProof } = req.body;
+        const { userId, subscriptionProof, subscriptionPlan } = req.body;
 
-        if (!userId || !subscriptionProof) {
-            return res.status(400).json({ message: 'User ID and proof are required' });
+        if (!userId || !subscriptionProof || !subscriptionPlan) {
+            return res.status(400).json({ message: 'User ID, plan and proof are required' });
         }
 
         const user = await User.findById(userId);
@@ -152,6 +155,7 @@ router.put('/subscribe-proof', async (req, res) => {
 
         user.isSubscribed = true;
         user.subscriptionProof = subscriptionProof;
+        user.subscriptionPlan = subscriptionPlan;
 
         await user.save();
         console.log('Subscription completed for user:', user._id);
@@ -163,6 +167,7 @@ router.put('/subscribe-proof', async (req, res) => {
             role: user.role,
             profileCompleted: user.profileCompleted,
             isSubscribed: user.isSubscribed,
+            subscriptionPlan: user.subscriptionPlan,
             token: generateToken(user._id),
         });
     } catch (error) {

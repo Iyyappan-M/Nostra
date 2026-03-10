@@ -16,7 +16,7 @@
 
 <body style="background: #f4f7f6; overflow-x: hidden; font-family: 'Poppins', sans-serif;">
     <nav class="navbar scrolled" id="navbar">
-        <h1 style="color: var(--primary-color);">NOSTRA</h1>
+        <h1 style="color: #2ecc71;">NOSTRA</h1>
         <div class="navbar-links">
             <a href="index.html" class="navbar-link">Home</a>
             <a href="collection.html" class="navbar-link">Collection</a>
@@ -44,68 +44,102 @@
             <div style="width: 100px; height: 100px; background: #2ecc71; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 3rem; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
                 <i class="fa-solid fa-check"></i>
             </div>
-            <h2 style="font-size: 2.5rem; color: #2c3e50; margin-bottom: 1rem;">Payment Successful!</h2>
-            <p style="font-size: 1.1rem; color: #7f8c8d; max-width: 500px; margin: 0 auto 3rem;">Payment screenshot uploaded successfully. Your subscription request has been submitted and your account is now active.</p>
-            <a href="admin-dashboard.html" class="btn-gradient" style="background: #2ecc71; display: inline-block; padding: 1rem 3rem;">Go to Dashboard</a>
+            <h2 style="font-size: 2.5rem; color: #2c3e50; margin-bottom: 1rem;">Subscription Submitted!</h2>
+            <p style="font-size: 1.1rem; color: #7f8c8d; max-width: 500px; margin: 0 auto 3rem;">Payment screenshot uploaded successfully. Your subscription request for the <span id="success-plan-name" style="color: #2ecc71; font-weight: 700;"></span> has been submitted.</p>
+            <a href="admin-dashboard.html" class="btn-gradient" style="background: #2ecc71; display: inline-block; padding: 1rem 3rem;">Start Adding Products</a>
         </div>
     </div>
 
     <!-- Main Subscription Logic -->
-    <main id="subscription-main" style="min-height: 100vh; padding: 12rem 2rem 4rem;">
-        <div style="max-width: 900px; margin: 0 auto;">
+    <main id="subscription-main" style="min-height: 100vh; padding: 10rem 2rem 4rem;">
+        <div style="max-width: 1200px; margin: 0 auto;">
             <!-- Plan Header -->
             <div style="text-align: center; margin-bottom: 4rem;">
-                <h2 style="font-size: 3rem; font-weight: 800; color: #2c3e50;">Unlock <span style="color: #2ecc71;">Elite Vendor</span> Privileges</h2>
-                <p style="color: #7f8c8d; font-size: 1.2rem;">Subscribe now to start adding your own products to the Nostra collection.</p>
+                <h2 style="font-size: 3rem; font-weight: 800; color: #2c3e50;">Choose Your <span style="color: #2ecc71;">Nostra Plan</span></h2>
+                <p style="color: #7f8c8d; font-size: 1.2rem;">Select a plan that fits your growth and start showcasing your styles.</p>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: start;">
-                <!-- Plan Card -->
-                <div style="background: white; padding: 3rem; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid #eef2f3; text-align: center;">
-                    <div style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; padding: 0.5rem 1.5rem; border-radius: 50px; display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 2rem;">Annual Plan</div>
-                    <div style="font-size: 4rem; font-weight: 800; color: #2c3e50; margin-bottom: 1rem;">₹1000</div>
-                    <p style="color: #95a5a6; margin-bottom: 2rem;">Billed once for lifetime vendor access</p>
-                    
-                    <ul style="text-align: left; list-style: none; padding: 0; margin-bottom: 3rem;">
-                        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #2ecc71;"></i> Add Unlimited Products</li>
-                        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #2ecc71;"></i> Vendor Dashboard Access</li>
-                        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #2ecc71;"></i> Verified Seller Badge</li>
-                        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #2ecc71;"></i> Priority Listing</li>
+            <!-- Plan Cards Grid -->
+            <div id="plans-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 5rem;">
+                
+                <!-- 1 Month Plan -->
+                <div class="plan-card">
+                    <div class="plan-badge">Basic</div>
+                    <div class="plan-price">₹200</div>
+                    <div class="plan-duration">1 Month Access</div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check"></i> Add Products</li>
+                        <li><i class="fa-solid fa-check"></i> Vendor Profile</li>
+                        <li><i class="fa-solid fa-check"></i> Basic Analytics</li>
                     </ul>
-
-                    <button id="show-payment-btn" class="btn-gradient" style="background: #2ecc71; width: 100%; padding: 1.2rem; border-radius: 15px; font-weight: 700;">Subscribe Now</button>
+                    <button class="subscribe-btn" data-plan="1 Month Plan" data-price="200">Subscribe</button>
                 </div>
 
-                <!-- Payment & Upload Section (Initially Hidden) -->
-                <div id="payment-section" style="display: none; background: white; padding: 3rem; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid #eef2f3; animation: slideUp 0.5s ease-out;">
-                    <h3 style="margin-bottom: 2rem; border-left: 5px solid #2ecc71; padding-left: 15px;">Secure Payment</h3>
+                <!-- 3 Months Plan -->
+                <div class="plan-card">
+                    <div class="plan-badge">Popular</div>
+                    <div class="plan-price">₹400</div>
+                    <div class="plan-duration">3 Months Access</div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check"></i> Add Products</li>
+                        <li><i class="fa-solid fa-check"></i> Priority Listings</li>
+                        <li><i class="fa-solid fa-check"></i> Customer Insights</li>
+                    </ul>
+                    <button class="subscribe-btn" data-plan="3 Months Plan" data-price="400">Subscribe</button>
+                </div>
+
+                <!-- 6 Months Plan -->
+                <div class="plan-card">
+                    <div class="plan-badge">Professional</div>
+                    <div class="plan-price">₹600</div>
+                    <div class="plan-duration">6 Months Access</div>
+                    <ul class="plan-features">
+                        <li><i class="fa-solid fa-check"></i> Unlimited Products</li>
+                        <li><i class="fa-solid fa-check"></i> Featured Vendor</li>
+                        <li><i class="fa-solid fa-check"></i> Dedicated Support</li>
+                    </ul>
+                    <button class="subscribe-btn" data-plan="6 Months Plan" data-price="600">Subscribe</button>
+                </div>
+
+                <!-- Annual Plan -->
+                <div class="plan-card highlighted">
+                    <div class="plan-badge" style="background: white; color: #2ecc71;">Best Value</div>
+                    <div class="plan-price" style="color: white;">₹1000</div>
+                    <div class="plan-duration" style="color: rgba(255,255,255,0.9);">12 Months Access</div>
+                    <ul class="plan-features" style="color: white;">
+                        <li><i class="fa-solid fa-check"></i> Lifetime Vendor Badge</li>
+                        <li><i class="fa-solid fa-check"></i> Highest Visibility</li>
+                        <li><i class="fa-solid fa-check"></i> VIP Vendor Perks</li>
+                    </ul>
+                    <button class="subscribe-btn" data-plan="Annual Plan" data-price="1000" style="background: white; color: #2ecc71;">Subscribe</button>
+                </div>
+
+            </div>
+
+            <!-- Payment & Upload Section (Initially Hidden) -->
+            <div id="payment-section" style="display: none; max-width: 600px; margin: 0 auto; background: white; padding: 3rem; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid #eef2f3; animation: slideUp 0.5s ease-out;">
+                <h3 style="margin-bottom: 2rem; border-left: 5px solid #2ecc71; padding-left: 15px;">Finalize <span id="selected-plan-name"></span></h3>
+                
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.2rem; color: #2c3e50; margin-bottom: 1rem;">Total Amount: <strong id="selected-plan-price"></strong></p>
+                    <p style="margin-bottom: 0.5rem; font-size: 0.9rem;"><strong>UPI ID:</strong> nostra@oksbi</p>
+                    <p style="margin-bottom: 0.5rem; font-size: 0.9rem;"><strong>A/C Holder:</strong> NOSTRA FASHION GROUP</p>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <i class="fa-solid fa-qrcode" style="font-size: 5rem; color: #2c3e50; opacity: 0.1;"></i>
+                    <p style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">Scan QR code or use UPI to pay</p>
+                </div>
+
+                <form id="subscribe-form">
+                    <label style="display: block; margin-bottom: 10px; font-weight: 600;">Upload Payment Proof (JPG, PNG, PDF)</label>
+                    <input type="file" id="proof-input" accept="image/png, image/jpeg, application/pdf" required
+                        style="width: 100%; padding: 1rem; border: 2px dashed #2ecc71; border-radius: 15px; margin-bottom: 2rem; cursor: pointer;">
                     
-                    <!-- Bank Details -->
-                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem;">
-                        <p style="margin-bottom: 0.5rem;"><strong>Account Holder:</strong> NOSTRA FASHION GROUP</p>
-                        <p style="margin-bottom: 0.5rem;"><strong>UPI ID:</strong> nostra@oksbi</p>
-                        <p style="margin: 0;"><strong>Bank:</strong> State Bank of India</p>
-                    </div>
-
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <i class="fa-solid fa-qrcode" style="font-size: 5rem; color: #2c3e50; opacity: 0.1;"></i>
-                        <p style="font-size: 0.8rem; color: #95a5a6; margin-top: 5px;">Scan QR code or use UPI to pay ₹1000</p>
-                    </div>
-
-                    <form id="subscribe-form">
-                        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Upload Payment Proof (PNG, JPG, PDF)</label>
-                        <input type="file" id="proof-input" accept="image/png, image/jpeg, application/pdf" required
-                            style="width: 100%; padding: 1rem; border: 2px dashed #2ecc71; border-radius: 15px; margin-bottom: 2rem; cursor: pointer;">
-                        
-                        <div id="file-preview" style="display: none; background: #eafaf1; padding: 1rem; border-radius: 10px; margin-bottom: 2rem; font-size: 0.9rem; color: #27ae60;">
-                            <i class="fa-solid fa-file-invoice"></i> <span id="filename-display"></span>
-                        </div>
-
-                        <button type="submit" class="btn-gradient" id="submit-proof-btn" style="background: #2ecc71; width: 100%; padding: 1.2rem; border-radius: 15px; font-weight: 700;">
-                            Submit & Activate Access
-                        </button>
-                    </form>
-                </div>
+                    <button type="submit" class="btn-gradient" id="submit-proof-btn" style="background: #2ecc71; width: 100%; padding: 1.2rem; border-radius: 15px; font-weight: 700;">
+                        Submit Payment Proof
+                    </button>
+                </form>
             </div>
         </div>
     </main>
@@ -114,6 +148,73 @@
         :root {
             --primary-color: #2ecc71;
             --gradient-primary: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        .plan-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid #f0f0f0;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(46, 204, 113, 0.1);
+        }
+        .plan-card.highlighted {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        .plan-badge {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .plan-duration {
+            color: #95a5a6;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2.5rem;
+            text-align: left;
+        }
+        .plan-features li {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subscribe-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            border: none;
+            background: #f8f9fa;
+            color: #2ecc71;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .subscribe-btn:hover {
+            background: #2ecc71;
+            color: white;
         }
         .btn-gradient {
             border: none;
@@ -124,8 +225,6 @@
             text-align: center;
         }
         .btn-gradient:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
             filter: brightness(1.1);
         }
         @keyframes slideUp {
@@ -148,76 +247,75 @@
                 return;
             }
 
-            const showPaymentBtn = document.getElementById('show-payment-btn');
+            const subscribeBtns = document.querySelectorAll('.subscribe-btn');
             const paymentSection = document.getElementById('payment-section');
+            const selectedPlanName = document.getElementById('selected-plan-name');
+            const selectedPlanPrice = document.getElementById('selected-plan-price');
             const subscribeForm = document.getElementById('subscribe-form');
-            const proofInput = document.getElementById('proof-input');
-            const filePreview = document.getElementById('file-preview');
-            const filenameDisplay = document.getElementById('filename-display');
+            const successPlanName = document.getElementById('success-plan-name');
 
-            showPaymentBtn.addEventListener('click', () => {
-                paymentSection.style.display = 'block';
-                showPaymentBtn.style.display = 'none';
-                paymentSection.scrollIntoView({ behavior: 'smooth' });
-            });
+            let currentPlan = '';
 
-            proofInput.addEventListener('change', () => {
-                if (proofInput.files[0]) {
-                    filenameDisplay.textContent = proofInput.files[0].name;
-                    filePreview.style.display = 'block';
-                }
+            subscribeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentPlan = btn.getAttribute('data-plan');
+                    const price = btn.getAttribute('data-price');
+                    
+                    selectedPlanName.textContent = currentPlan;
+                    selectedPlanPrice.textContent = `₹${price}`;
+                    paymentSection.style.display = 'block';
+                    paymentSection.scrollIntoView({ behavior: 'smooth' });
+                });
             });
 
             subscribeForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const file = proofInput.files[0];
+                const fileInput = document.getElementById('proof-input');
                 const submitBtn = document.getElementById('submit-proof-btn');
+
+                if (!fileInput.files[0]) return;
 
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Uploading...';
 
-                // 1. Upload File
                 const formData = new FormData();
-                formData.append('screenshot', file);
+                formData.append('screenshot', fileInput.files[0]);
 
                 try {
+                    // 1. Upload
                     const uploadRes = await fetch('/api/orders/upload-payment', {
                         method: 'POST',
                         body: formData
                     });
-
-                    if (!uploadRes.ok) throw new Error('Upload failed');
                     const uploadData = await uploadRes.json();
 
-                    // 2. Update User Status
-                    const subscribeRes = await fetch('/api/auth/subscribe-proof', {
+                    // 2. Subscribe
+                    const res = await fetch('/api/auth/subscribe-proof', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             userId: user._id,
-                            subscriptionProof: uploadData.imagePath
+                            subscriptionProof: uploadData.imagePath,
+                            subscriptionPlan: currentPlan
                         })
                     });
 
-                    if (subscribeRes.ok) {
-                        const updatedUser = await subscribeRes.json();
-                        // Update local storage with new isSubscribed status
-                        const localUser = JSON.parse(localStorage.getItem('user'));
-                        localUser.isSubscribed = true;
-                        localStorage.setItem('user', JSON.stringify(localUser));
-
+                    if (res.ok) {
+                        const updatedUser = await res.json();
+                        localStorage.setItem('user', JSON.stringify(updatedUser));
+                        
+                        successPlanName.textContent = currentPlan;
                         document.getElementById('subscription-main').style.display = 'none';
                         document.getElementById('success-screen').style.display = 'flex';
                     } else {
-                        const err = await subscribeRes.json();
+                        const err = await res.json();
                         alert(err.message);
                     }
                 } catch (err) {
-                    console.error(err);
-                    alert('An error occurred during verification.');
+                    alert('Submission error. Please try again.');
                 } finally {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Submit & Activate Access';
+                    submitBtn.textContent = 'Submit Payment Proof';
                 }
             });
         });

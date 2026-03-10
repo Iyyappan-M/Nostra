@@ -47,6 +47,9 @@ const userSchema = new mongoose.Schema({
     },
     subscriptionProof: {
         type: String
+    },
+    subscriptionPlan: {
+        type: String
     }
 }, {
     timestamps: true

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Nostra</title>
+    <title>Vendor Dashboard | Nostra</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,8 +13,8 @@
 
 <body style="background: var(--light-bg);">
     <nav class="navbar scrolled">
-        <h1>NOSTRA <span
-                style="font-size: 0.8rem; background: var(--gradient-primary); padding: 2px 8px; border-radius: 4px; color: white;">ADMIN</span>
+        <h1>NOSTRA <span id="dashboard-tag"
+                style="font-size: 0.8rem; background: #2ecc71; padding: 2px 8px; border-radius: 4px; color: white;">VENDOR</span>
         </h1>
         <div class="navbar-links">
             <a href="index.html" class="navbar-link">View Shop</a>
@@ -37,8 +37,8 @@
 
     <div class="checkout-container" style="padding-top: 8rem;">
         <div class="section-title">
-            <h2>Product Management</h2>
-            <p>Add new styles to the Nostra collection</p>
+            <h2 id="dashboard-title">Vendor Panel</h2>
+            <p id="dashboard-subtitle">Manage your premium product listings</p>
         </div>
 
         <div class="auth-card" style="max-width: 800px; margin: 2rem auto;">
@@ -68,8 +68,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Image Filename</label>
-                        <input type="text" name="image" placeholder="e.g. shirt1.jpg" required>
+                        <label>Image Filename/URL</label>
+                        <input type="text" name="image" placeholder="e.g. shirt1.jpg or Unsplash URL" required>
                     </div>
                 </div>
 
@@ -80,13 +80,13 @@
                         required></textarea>
                 </div>
 
-                <button type="submit" class="btn-gradient" id="submit-btn" style="width: 100%; margin-top: 2rem;">Publish to Shop</button>
+                <button type="submit" class="btn-gradient" id="submit-btn" style="width: 100%; margin-top: 2rem; background: #2ecc71;">Publish Product</button>
                 <button type="button" class="btn-gradient" id="cancel-edit-btn" style="width: 100%; margin-top: 1rem; display: none; background: #6c757d; -webkit-text-fill-color: white;">Cancel Edit</button>
             </form>
         </div>
 
         <div class="section-title" style="margin-top: 5rem;">
-            <h3>Live Products</h3>
+            <h3>Live Market</h3>
         </div>
         <div id="admin-product-list" class="product-grid">
             <!-- Products listed here -->
@@ -98,7 +98,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const user = JSON.parse(localStorage.getItem('user'));
 
-            // Protect Route
+            // Protect Route & Permissions
             if (!user || (user.role !== 'admin' && !user.isSubscribed)) {
                 if (!user) {
                     window.location.href = 'admin-login.html';
@@ -106,10 +106,18 @@
                     alert('Please subscribe to add products.');
                     window.location.href = 'subscribe.html';
                 } else {
-                    alert('Access Denied. Admin privileges required.');
+                    alert('Access Denied.');
                     window.location.href = 'index.html';
                 }
                 return;
+            }
+
+            // UI Adjustments for Admins vs Vendors
+            if (user.role === 'admin') {
+                document.getElementById('dashboard-tag').textContent = 'ADMIN';
+                document.getElementById('dashboard-tag').style.background = 'var(--gradient-primary)';
+                document.getElementById('dashboard-title').textContent = 'Admin Command Center';
+                document.getElementById('dashboard-subtitle').textContent = 'Full control over the shop ecosystem';
             }
 
             // Logout Logic
@@ -132,16 +140,22 @@
                 window.adminProducts = products;
                 productList.innerHTML = products.map(p => {
                     const imageUrl = p.image.startsWith('http') ? p.image : `images/${p.image}`;
+                    
+                    // Admin only controls
+                    const adminControls = user.role === 'admin' ? `
+                        <button onclick="editProduct('${p._id}')" 
+                            style="position: absolute; top: 10px; right: 55px; z-index: 10; background: rgba(0,123,255,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteProduct('${p._id}')" 
+                            style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    ` : '';
+
                     return `
                         <div class="product-card" style="position: relative;">
-                            <button onclick="editProduct('${p._id}')" 
-                                style="position: absolute; top: 10px; right: 55px; z-index: 10; background: rgba(0,123,255,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <button onclick="deleteProduct('${p._id}')" 
-                                style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                            ${adminControls}
                             <div class="product-img-container">
                                 <img src="${imageUrl}" alt="${p.name}">
                             </div>
@@ -155,8 +169,12 @@
                 }).join('');
             };
 
-            // Delete Product
+            // Delete Product (Admin Only)
             window.deleteProduct = async (id) => {
+                if (user.role !== 'admin') {
+                    alert('Only admins can delete products.');
+                    return;
+                }
                 if (!confirm('Are you sure you want to remove this product?')) return;
 
                 try {
@@ -179,7 +197,7 @@
                 }
             };
 
-            // Edit Product properties
+            // Edit Product (Admin Only)
             window.editingProductId = null;
 
             window.editProduct = (id) => {
@@ -188,6 +206,7 @@
                 
                 window.editingProductId = id;
                 document.getElementById('submit-btn').textContent = 'Update Product';
+                document.getElementById('submit-btn').style.background = '#007bff';
                 document.getElementById('cancel-edit-btn').style.display = 'block';
 
                 form.name.value = product.name;
@@ -204,14 +223,15 @@
                 cancelBtn.addEventListener('click', () => {
                     window.editingProductId = null;
                     form.reset();
-                    document.getElementById('submit-btn').textContent = 'Publish to Shop';
+                    document.getElementById('submit-btn').textContent = 'Publish Product';
+                    document.getElementById('submit-btn').style.background = '#2ecc71';
                     document.getElementById('cancel-edit-btn').style.display = 'none';
                 });
             }
 
             fetchAdminProducts();
 
-            // Add or Update Product
+            // Add or Update Product (Subscribed Users & Admins)
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(form);
@@ -238,10 +258,11 @@
                     });
 
                     if (res.ok) {
-                        alert(`Product ${isEdit ? 'updated' : 'added'} successfully!`);
+                        alert(`Product ${isEdit ? 'updated' : 'published'} successfully!`);
                         form.reset();
                         window.editingProductId = null;
-                        document.getElementById('submit-btn').textContent = 'Publish to Shop';
+                        document.getElementById('submit-btn').textContent = 'Publish Product';
+                        document.getElementById('submit-btn').style.background = '#2ecc71';
                         document.getElementById('cancel-edit-btn').style.display = 'none';
                         fetchAdminProducts();
                     } else {
