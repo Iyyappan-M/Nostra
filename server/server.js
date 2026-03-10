@@ -29,6 +29,14 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/store', storeRoutes);
 app.use('/api/chat', chatRoutes);
 
+// Serve Static Frontend Files
+app.use(express.static(path.join(__dirname, '../client')));
+
+// Catch-all route to serve the frontend homepage for unknown routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client', 'index.html'));
+});
+
 // Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error('SERVER ERROR:', err.stack);
