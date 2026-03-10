@@ -50,3 +50,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }, (duration + delay) * 1000);
     }
 });
+

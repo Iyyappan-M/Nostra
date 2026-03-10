@@ -99,7 +99,7 @@
 
             // Fetch current products
             const fetchAdminProducts = async () => {
-                const res = await fetch('http://localhost:5000/api/products');
+                const res = await fetch('https://nostra-z943.onrender.com/api/products');
                 const products = await res.json();
                 window.adminProducts = products;
                 productList.innerHTML = products.map(p => {
@@ -132,7 +132,7 @@
                 if (!confirm('Are you sure you want to remove this product?')) return;
 
                 try {
-                    const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+                    const res = await fetch(`https://nostra-z943.onrender.com/api/products/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Authorization': `Bearer ${user.token}`
@@ -196,7 +196,7 @@
                 };
 
                 const isEdit = !!window.editingProductId;
-                const url = isEdit ? `http://localhost:5000/api/products/${window.editingProductId}` : 'http://localhost:5000/api/products';
+                const url = isEdit ? `https://nostra-z943.onrender.com/api/products/${window.editingProductId}` : 'https://nostra-z943.onrender.com/api/products';
                 const method = isEdit ? 'PUT' : 'POST';
 
                 try {
@@ -229,3 +229,4 @@
 </body>
 
 </html>
+

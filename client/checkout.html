@@ -426,7 +426,7 @@
 
                 try {
                     // 1. Upload Screenshot
-                    const uploadRes = await fetch('http://localhost:5000/api/orders/upload-payment', {
+                    const uploadRes = await fetch('https://nostra-z943.onrender.com/api/orders/upload-payment', {
                         method: 'POST',
                         body: formData
                     });
@@ -479,7 +479,7 @@
                 };
 
                 try {
-                    const res = await fetch('http://localhost:5000/api/orders', {
+                    const res = await fetch('https://nostra-z943.onrender.com/api/orders', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(orderData)
@@ -507,3 +507,4 @@
 </body>
 
 </html>
+

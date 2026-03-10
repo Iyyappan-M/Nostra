@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadingId = appendMessage('bot', '<i class="fa-solid fa-ellipsis fa-beat"></i> Thinking...');
 
         try {
-            const res = await fetch('http://localhost:5000/api/chat/search', {
+            const res = await fetch('https://nostra-z943.onrender.com/api/chat/search', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: msg })
@@ -123,3 +123,4 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 });
+
