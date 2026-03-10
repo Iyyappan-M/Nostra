@@ -33,7 +33,12 @@ app.use('/api/chat', chatRoutes);
 app.use(express.static(path.join(__dirname, '../client')));
 
 // Catch-all route to serve the frontend homepage for unknown routes
-app.get('*', (req, res) => {
+app.use((req, res, next) => {
+    // If it's an API route that wasn't found, let the error handler deal with it
+    if (req.path.startsWith('/api/')) {
+        return next();
+    }
+    // Otherwise, serve the frontend index.html
     res.sendFile(path.join(__dirname, '../client', 'index.html'));
 });
 
