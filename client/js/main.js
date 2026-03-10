@@ -1,4 +1,9 @@
+const API_BASE = window.location.protocol === 'file:' ? 'https://nostra-z943.onrender.com' : '';
+
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.protocol === 'file:') {
+        console.warn('Nostra: You are opening the site via file://. API calls will be redirected to the production server.');
+    }
     // Safety Wash: Clear out stale data from "GitHub Pages" experiment if it exists
     const staleUser = JSON.parse(localStorage.getItem('user') || 'null');
     const staleCart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -75,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Sending data:', { email, password: '***' });
 
             try {
-                const res = await fetch('/api/auth/login', {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -116,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Sending data:', { name, email, password: '***' });
 
             try {
-                const res = await fetch('/api/auth/register', {
+                const res = await fetch(`${API_BASE}/api/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -244,7 +249,7 @@ function checkLoginStatus() {
 async function fetchProducts() {
     const productGrid = document.getElementById('product-grid');
     try {
-        const res = await fetch('/api/products');
+        const res = await fetch(`${API_BASE}/api/products`);
         const products = await res.json();
 
         if (products.length === 0) {
@@ -319,7 +324,7 @@ function exploreCollection() {
 async function fetchHomeProducts() {
     const homeProductGrid = document.querySelector('.product-grid');
     try {
-        const res = await fetch('/api/products');
+        const res = await fetch(`${API_BASE}/api/products`);
         let products = await res.json();
 
         // Take first 4 for home page arrivals
@@ -346,7 +351,7 @@ async function fetchHomeProducts() {
 
 async function fetchStoreDetails() {
     try {
-        const res = await fetch('/api/store');
+        const res = await fetch(`${API_BASE}/api/store`);
         if (!res.ok) return;
         const store = await res.json();
 
