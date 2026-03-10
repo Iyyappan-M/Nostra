@@ -257,8 +257,31 @@
 
             let currentPlan = '';
 
+            // Check if already subscribed on load
+            if (user.isSubscribed) {
+                const header = document.querySelector('#subscription-main h2');
+                if (header) {
+                    header.innerHTML = 'You are an <span style="color: #FF4D6D;">Elite Member</span>';
+                    const subText = document.querySelector('#subscription-main p');
+                    if (subText) subText.textContent = `Your ${user.subscriptionPlan || 'Elite'} membership is currently active. Enjoy your vendor perks!`;
+                }
+                
+                // Update buttons
+                subscribeBtns.forEach(btn => {
+                    btn.textContent = 'Subscribed';
+                    btn.style.background = '#f0f0f0';
+                    btn.style.color = '#7f8c8d';
+                    btn.style.cursor = 'default';
+                });
+            }
+
             subscribeBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', (e) => {
+                    if (user.isSubscribed) {
+                        e.preventDefault();
+                        alert('You are already subscribed to a Nostra Plan!');
+                        return;
+                    }
                     currentPlan = btn.getAttribute('data-plan');
                     const price = btn.getAttribute('data-price');
                     
