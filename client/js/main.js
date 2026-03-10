@@ -247,6 +247,13 @@ async function fetchProducts() {
 }
 
 function addToCart(product) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        alert('Please login to add items to your cart.');
+        window.location.href = 'login.html';
+        return;
+    }
+
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const existing = cart.find(item => item._id === product._id);
 
@@ -263,6 +270,28 @@ function addToCart(product) {
         window.location.href = 'checkout.html';
     }
 }
+
+function viewDetail() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        alert('Please login to view details.');
+        window.location.href = 'login.html';
+    } else {
+        window.location.href = 'collection.html';
+    }
+}
+
+function exploreCollection() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        alert('Please sign up to explore our collection.');
+        window.location.href = 'signup.html';
+    } else {
+        window.location.href = 'collection.html';
+    }
+}
+
+
 async function fetchHomeProducts() {
     const homeProductGrid = document.querySelector('.product-grid');
     try {
@@ -282,7 +311,7 @@ async function fetchHomeProducts() {
                 <div class="product-info">
                     <h3>${product.name}</h3>
                     <p class="price">₹${product.price.toLocaleString('en-IN')}</p>
-                    <a href="collection.html" class="btn-gradient" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">View Detail</a>
+                    <button class="btn-gradient" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;" onclick="viewDetail()">View Detail</button>
                 </div>
             </div>
         `).join('');
