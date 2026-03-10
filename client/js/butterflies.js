@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createButterfly(container) {
-        const butterfly = document.createElement('div');
+        let butterfly = document.createElement('div');
         butterfly.className = 'butterfly';
 
         // Random properties

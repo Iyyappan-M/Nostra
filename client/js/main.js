@@ -1,4 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Safety Wash: Clear out stale data from "GitHub Pages" experiment if it exists
+    const staleUser = JSON.parse(localStorage.getItem('user') || 'null');
+    const staleCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const isMongoId = (id) => id && /^[0-9a-fA-F]{24}$/.test(id);
+
+    // If user exists but lacks a real Mongo ID, or any cart item has a non-Mongo ID (like '6')
+    if ((staleUser && !isMongoId(staleUser._id)) || (staleCart.length > 0 && !isMongoId(staleCart[0]._id))) {
+        console.warn('Stale experiment data detected. Sanitizing local storage...');
+        localStorage.removeItem('user');
+        localStorage.removeItem('cart');
+        location.reload(); // Refresh to ensure app starts clean
+        return;
+    }
+
     // Navbar toggle
     const menuToggle = document.querySelector('.navbar-menu-toggle');
     const sideNavbar = document.querySelector('.side-navbar');
@@ -6,13 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
-            sideNavbar.classList.add('active');
+            if (sideNavbar) sideNavbar.classList.add('active');
         });
     }
 
     if (sideNavbarClose) {
         sideNavbarClose.addEventListener('click', () => {
-            sideNavbar.classList.remove('active');
+            if (sideNavbar) sideNavbar.classList.remove('active');
         });
     }
 
@@ -128,16 +142,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Sticky Navbar on Scroll
     const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            // Only remove if it's the index page (where it starts transparent)
-            if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '') {
-                navbar.classList.remove('scrolled');
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                // Only remove if it's the index page (where it starts transparent)
+                if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '') {
+                    navbar.classList.remove('scrolled');
+                }
             }
-        }
-    });
+        });
+    }
 
     // Check Login Status & Update UI
     checkLoginStatus();
@@ -160,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (profileIcon) {
         profileIcon.addEventListener('click', (e) => {
             e.stopPropagation();
-            dropdownMenu.classList.toggle('active');
+            if (dropdownMenu) dropdownMenu.classList.toggle('active');
         });
     }
 

@@ -60,4 +60,27 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// @route PUT /api/products/:id
+router.put('/:id', async (req, res) => {
+    try {
+        const { name, price, category, image, description } = req.body;
+        const product = await Product.findById(req.params.id);
+
+        if (product) {
+            product.name = name || product.name;
+            product.price = price || product.price;
+            product.category = category || product.category;
+            product.image = image || product.image;
+            product.description = description || product.description;
+
+            const updatedProduct = await product.save();
+            res.json(updatedProduct);
+        } else {
+            res.status(404).json({ message: 'Product not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;

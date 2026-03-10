@@ -69,8 +69,8 @@
                         required></textarea>
                 </div>
 
-                <button type="submit" class="btn-gradient" style="width: 100%; margin-top: 2rem;">Publish to
-                    Shop</button>
+                <button type="submit" class="btn-gradient" id="submit-btn" style="width: 100%; margin-top: 2rem;">Publish to Shop</button>
+                <button type="button" class="btn-gradient" id="cancel-edit-btn" style="width: 100%; margin-top: 1rem; display: none; background: #6c757d; -webkit-text-fill-color: white;">Cancel Edit</button>
             </form>
         </div>
 
@@ -101,10 +101,15 @@
             const fetchAdminProducts = async () => {
                 const res = await fetch('http://localhost:5000/api/products');
                 const products = await res.json();
+                window.adminProducts = products;
                 productList.innerHTML = products.map(p => {
                     const imageUrl = p.image.startsWith('http') ? p.image : `images/${p.image}`;
                     return `
                         <div class="product-card" style="position: relative;">
+                            <button onclick="editProduct('${p._id}')" 
+                                style="position: absolute; top: 10px; right: 55px; z-index: 10; background: rgba(0,123,255,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
                             <button onclick="deleteProduct('${p._id}')" 
                                 style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
                                 <i class="fa-solid fa-trash"></i>
@@ -146,9 +151,39 @@
                 }
             };
 
+            // Edit Product properties
+            window.editingProductId = null;
+
+            window.editProduct = (id) => {
+                const product = window.adminProducts.find(p => p._id === id);
+                if (!product) return;
+                
+                window.editingProductId = id;
+                document.getElementById('submit-btn').textContent = 'Update Product';
+                document.getElementById('cancel-edit-btn').style.display = 'block';
+
+                form.name.value = product.name;
+                form.price.value = product.price;
+                form.category.value = product.category;
+                form.image.value = product.image;
+                form.description.value = product.description;
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const cancelBtn = document.getElementById('cancel-edit-btn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    window.editingProductId = null;
+                    form.reset();
+                    document.getElementById('submit-btn').textContent = 'Publish to Shop';
+                    document.getElementById('cancel-edit-btn').style.display = 'none';
+                });
+            }
+
             fetchAdminProducts();
 
-            // Add Product
+            // Add or Update Product
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const formData = new FormData(form);
@@ -160,9 +195,13 @@
                     description: formData.get('description')
                 };
 
+                const isEdit = !!window.editingProductId;
+                const url = isEdit ? `http://localhost:5000/api/products/${window.editingProductId}` : 'http://localhost:5000/api/products';
+                const method = isEdit ? 'PUT' : 'POST';
+
                 try {
-                    const res = await fetch('http://localhost:5000/api/products', {
-                        method: 'POST',
+                    const res = await fetch(url, {
+                        method: method,
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${user.token}`
@@ -171,8 +210,11 @@
                     });
 
                     if (res.ok) {
-                        alert('Product added successfully!');
+                        alert(`Product ${isEdit ? 'updated' : 'added'} successfully!`);
                         form.reset();
+                        window.editingProductId = null;
+                        document.getElementById('submit-btn').textContent = 'Publish to Shop';
+                        document.getElementById('cancel-edit-btn').style.display = 'none';
                         fetchAdminProducts();
                     } else {
                         const err = await res.json();
