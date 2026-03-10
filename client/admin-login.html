@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | Nostra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="auth-page" style="background: var(--dark-bg);">
+        <div class="auth-card"
+            style="border: 2px solid var(--secondary-color); background: rgba(30, 30, 47, 0.95); color: white;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <i class="fa-solid fa-user-shield"
+                    style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 1rem;"></i>
+                <h1
+                    style="background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Admin Login</h1>
+                <p style="color: #888; font-size: 0.9rem;">Internal Staff Access Only</p>
+            </div>
+
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <input type="email" id="admin-email" name="email" placeholder="Admin Email" required
+                        style="background: rgba(255,255,255,0.05); border-color: #444; color: white;">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="admin-password" name="password" placeholder="Key Phrase" required
+                        style="background: rgba(255,255,255,0.05); border-color: #444; color: white;">
+                </div>
+                <button type="submit" class="btn-gradient" style="width: 100%; filter: hue-rotate(45deg);">Enter
+                    Dashboard</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="login.html" style="font-size: 0.8rem; color: var(--secondary-color);">Switch to Customer
+                    Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    if (data.role !== 'admin') {
+                        alert('Access Denied: This account does not have Admin privileges.');
+                        return;
+                    }
+                    localStorage.setItem('user', JSON.stringify(data));
+                    alert('Nostra Admin Access Granted!');
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                alert('Connection Error');
+            }
+        });
+    </script>
+</body>
+
+</html>

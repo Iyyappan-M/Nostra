@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nostra | Elevate Your Style</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/butterflies.css">
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <h1>NOSTRA</h1>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">Home</a>
+            <a href="collection.html" class="navbar-link">Collection</a>
+            <a href="contact.html" class="navbar-link">Contact</a>
+        </div>
+        <div class="navbar-icons">
+            <a href="login.html" id="login-link"><i class="fa-solid fa-user"></i></a>
+            <a href="#" id="navbar-chat-btn"><i class="fa-solid fa-comment-dots"></i></a>
+
+            <div class="profile-container" id="profile-container" style="display: none;">
+                <div class="profile-icon" id="profile-icon"></div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <span class="dropdown-item" id="user-email-display"
+                        style="font-weight: 600; border-bottom: 1px solid #eee;"></span>
+                    <a href="checkout.html" class="dropdown-item"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+                    <a href="orders.html" class="dropdown-item"><i class="fa-solid fa-box-open"></i> My Orders</a>
+                    <a href="#" class="dropdown-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+
+            <div class="navbar-menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <video autoplay muted loop playsinline id="hero-video">
+            <source src="https://videos.pexels.com/video-files/3755498/3755498-uhd_2732_1440_25fps.mp4"
+                type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-content">
+            <h1>Level Up Your Style</h1>
+            <p>Discover the future of fashion. Premium quality, vibrant designs.</p>
+            <a href="collection.html" class="btn-gradient">Explore Collection</a>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-title">
+            <h2>Why Choose Nostra?</h2>
+            <p>We redefine your lifestyle with premium fashion experiences.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fa-regular fa-face-smile"></i>
+                <h4>Premium Experience</h4>
+                <p>100% satisfaction guaranteed with every unique piece.</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-bolt"></i>
+                <h4>Daily New Trends</h4>
+                <p>Stay ahead with our lightning-fast trend updates.</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-truck-fast"></i>
+                <h4>Elite Shipping</h4>
+                <p>Fast, tracked, and secure global delivery services.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--light-bg);">
+        <div class="section-title">
+            <h2>New Arrivals</h2>
+        </div>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-img-container">
+                    <img src="https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=500&h=600&fit=crop"
+                        alt="Classic Shirt">
+                </div>
+                <div class="product-info">
+                    <h3>Vibrant Classic</h3>
+                    <p class="price">$45.00</p>
+                    <a href="collection.html" class="btn-gradient"
+                        style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">View Detail</a>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img-container">
+                    <img src="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500&h=600&fit=crop"
+                        alt="Summer Dress">
+                </div>
+                <div class="product-info">
+                    <h3>Floral Muse</h3>
+                    <p class="price">$60.00</p>
+                    <a href="collection.html" class="btn-gradient"
+                        style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">View Detail</a>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img-container">
+                    <img src="https://images.unsplash.com/photo-1576905355165-769a1cd91665?w=500&h=600&fit=crop"
+                        alt="Denim Jacket">
+                </div>
+                <div class="product-info">
+                    <h3>Azure Denim</h3>
+                    <p class="price">$85.00</p>
+                    <a href="collection.html" class="btn-gradient"
+                        style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">View Detail</a>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img-container">
+                    <img src="https://images.unsplash.com/photo-1593032465175-481ac7f401a0?w=500&h=600&fit=crop"
+                        alt="Formal Wear">
+                </div>
+                <div class="product-info">
+                    <h3>Elite Formal</h3>
+                    <p class="price">₹120.00</p>
+                    <a href="collection.html" class="btn-gradient"
+                        style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">View Detail</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <h2>Join the Elite Club</h2>
+        <p>Get exclusive early access to our seasonal drops and VIP discounts.</p>
+        <div style="margin-top: 2rem;">
+            <a href="subscribe.html" class="btn-gradient"
+                style="background: white; color: var(--primary-color);">Subscribe Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h2>NOSTRA</h2>
+                <p>The premium destination for the modern fashionista. Bold, vibrant, and unique.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3 style="color: white; margin-bottom: 1.5rem;">Explore</h3>
+                <p style="margin-bottom: 0.8rem;"><a href="index.html" style="color: inherit;">Home</a></p>
+                <p style="margin-bottom: 0.8rem;"><a href="collection.html" style="color: inherit;">Collection</a></p>
+                <p style="margin-bottom: 0.8rem;"><a href="contact.html" style="color: inherit;">Contact</a></p>
+            </div>
+        </div>
+        <div style="text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem;">
+            <p>&copy; 2024 Nostra Fashion Group. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/butterflies.js"></script>
+</body>
+
+</html>

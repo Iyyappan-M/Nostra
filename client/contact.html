@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get in Touch | Nostra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar scrolled" id="navbar">
+        <h1>NOSTRA</h1>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">Home</a>
+            <a href="collection.html" class="navbar-link">Collection</a>
+            <a href="contact.html" class="navbar-link">Contact</a>
+        </div>
+        <div class="navbar-icons">
+            <a href="login.html" id="login-link"><i class="fa-solid fa-user"></i></a>
+
+            <div class="profile-container" id="profile-container" style="display: none;">
+                <div class="profile-icon" id="profile-icon"></div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <span class="dropdown-item" id="user-email-display"
+                        style="font-weight: 600; border-bottom: 1px solid #eee;"></span>
+                    <a href="checkout.html" class="dropdown-item"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+                    <a href="#" class="dropdown-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-page">
+        <div class="auth-card" style="max-width: 600px;">
+            <h1
+                style="text-align: center; margin-bottom: 2rem; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                Contact Our Stylists</h1>
+            <form>
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Tell us about your style..."
+                        style="width: 100%; padding: 1rem; border: 2px solid #eee; border-radius: 12px; outline: none; height: 150px; font-family: inherit; font-size: 1rem;"></textarea>
+                </div>
+                <button type="button" class="btn-gradient" style="width: 100%;"
+                    onclick="alert('Message sent! Our stylist will contact you soon.')">Send Influence</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>

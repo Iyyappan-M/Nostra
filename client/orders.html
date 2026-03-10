@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Order History | Nostra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="background: var(--light-bg);">
+    <nav class="navbar scrolled">
+        <h1>NOSTRA</h1>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">Home</a>
+            <a href="collection.html" class="navbar-link">Collection</a>
+        </div>
+        <div class="navbar-icons">
+            <div class="profile-container" id="profile-container">
+                <div class="profile-icon" id="profile-icon"></div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <span class="dropdown-item" id="user-email-display"
+                        style="font-weight: 600; border-bottom: 1px solid #eee;"></span>
+                    <a href="checkout.html" class="dropdown-item"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+                    <a href="#" class="dropdown-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="checkout-container" style="padding-top: 10rem;">
+        <div class="section-title">
+            <h2>Your Order History</h2>
+            <p>Relive your premium style choices</p>
+        </div>
+
+        <div id="orders-list" style="max-width: 900px; margin: 2rem auto;">
+            <!-- Orders will be loaded here -->
+            <p style="text-align: center; color: #888;">Synchronizing your fashion diary...</p>
+        </div>
+    </div>
+
+    <style>
+        .order-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #f0f0f0;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .item-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .estimate-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #eaf8f1;
+            border: 1px solid #c2ebd5;
+            color: #27ae60;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+    </style>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const ordersList = document.getElementById('orders-list');
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/orders/user/${user._id}`);
+                const orders = await res.json();
+
+                if (orders.length === 0) {
+                    ordersList.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <i class="fa-solid fa-bag-shopping" style="font-size: 3rem; color: #eee; margin-bottom: 1rem;"></i>
+                            <p>You haven't placed any orders yet. <a href="collection.html" style="color: var(--primary-color);">Start Shopping</a></p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                ordersList.innerHTML = orders.map(order => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <span style="color: #888; font-size: 0.8rem;">ORDER ID: #${order._id.slice(-6).toUpperCase()}</span>
+                                <h4 style="margin-top: 5px;">Placed on ${new Date(order.createdAt).toLocaleDateString()}</h4>
+                                <div class="estimate-badge">
+                                    <i class="fa-solid fa-truck-fast"></i> Estimated Delivery: ${order.deliveryEstimate || '2-3 Business Days'}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="status-badge ${order.orderStatus !== 'Delivered' ? 'status-pending' : ''}">
+                                    ${order.orderStatus ? order.orderStatus.toUpperCase() : 'PROCESSING'}
+                                </span>
+                                <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">Payment: ${order.paymentMethod} (${order.paymentStatus})</p>
+                                <h3 style="color: var(--primary-color); margin-top: 5px;">₹${order.totalPrice.toLocaleString('en-IN')}</h3>
+                            </div>
+                        </div>
+                        <div class="order-items">
+                            ${order.orderItems.map(item => `
+                                <div class="item-row">
+                                    <img src="${item.image.startsWith('http') ? item.image : 'images/' + item.image}" class="item-img">
+                                    <div style="flex: 1;">
+                                        <h4 style="font-weight: 500;">${item.name}</h4>
+                                        <p style="color: #888; font-size: 0.9rem;">Qty: ${item.qty} × ₹${item.price.toLocaleString('en-IN')}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                ordersList.innerHTML = '<p style="text-align: center; color: red;">Error connecting to your history.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

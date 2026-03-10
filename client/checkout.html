@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Checkout | Nostra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar scrolled">
+        <h1>NOSTRA</h1>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">Home</a>
+            <a href="collection.html" class="navbar-link">Collection</a>
+        </div>
+        <div class="navbar-icons">
+            <a href="login.html" id="login-link"><i class="fa-solid fa-user"></i></a>
+
+            <div class="profile-container" id="profile-container" style="display: none;">
+                <div class="profile-icon" id="profile-icon"></div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <span class="dropdown-item" id="user-email-display"
+                        style="font-weight: 600; border-bottom: 1px solid #eee;"></span>
+                    <a href="orders.html" class="dropdown-item"><i class="fa-solid fa-box-open"></i> My Orders</a>
+                    <a href="#" class="dropdown-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="checkout-container" style="padding-top: 10rem;">
+        <div class="checkout-grid">
+            <div class="checkout-form">
+                <h2
+                    style="background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2rem;">
+                    Confirm Your Selection</h2>
+                <form id="payment-form">
+                    <h3 style="margin-bottom: 1.5rem; border-left: 4px solid var(--primary-color); padding-left: 10px;">
+                        Shipping Details</h3>
+                    <div class="form-group">
+                        <input type="text" id="address" required placeholder="Shipping Address">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <input type="text" id="city" required placeholder="City">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="postalCode" required placeholder="Zip Code">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="country" required placeholder="Country">
+                    </div>
+
+                    <h3
+                        style="margin: 2.5rem 0 1.5rem; border-left: 4px solid var(--secondary-color); padding-left: 10px;">
+                        Elite Payment</h3>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="COD" checked>
+                            <span><i class="fa-solid fa-money-bill-wave" style="color: var(--secondary-color)"></i> Cash
+                                On Delivery (COD)</span>
+                        </label>
+                        <label class="payment-option" id="online-payment-label">
+                            <input type="radio" name="payment" value="Online Payment">
+                            <span><i class="fa-solid fa-credit-card" style="color: var(--primary-color)"></i> Online
+                                Payment</span>
+                        </label>
+
+                        <div id="online-payment-methods"
+                            style="display: none; flex-direction: column; gap: 10px; margin-left: 30px; margin-top: 10px;">
+                            <button type="button" class="btn-payment-method" data-method="GPay"
+                                style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #fff; cursor: pointer; text-align: left;"><i
+                                    class="fa-brands fa-google-pay"
+                                    style="font-size: 1.5rem; vertical-align: middle; color: #4285F4; margin-right: 10px;"></i>
+                                GPay</button>
+                            <button type="button" class="btn-payment-method" data-method="PhonePe"
+                                style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #fff; cursor: pointer; text-align: left;"><i
+                                    class="fa-solid fa-mobile-screen"
+                                    style="font-size: 1.5rem; vertical-align: middle; color: #5f259f; margin-right: 10px;"></i>
+                                PhonePe</button>
+                            <button type="button" class="btn-payment-method" data-method="Paytm"
+                                style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #fff; cursor: pointer; text-align: left;"><i
+                                    class="fa-solid fa-wallet"
+                                    style="font-size: 1.5rem; vertical-align: middle; color: #00b9f5; margin-right: 10px;"></i>
+                                Paytm</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-gradient" style="margin-top: 3rem; width: 100%;">Finalize
+                        Order</button>
+                </form>
+            </div>
+
+            <div class="order-summary"
+                style="background: white; box-shadow: var(--card-shadow); border-radius: 25px; border: 1px solid #f0f0f0;">
+                <h3 style="margin-bottom: 2rem; text-align: center;">Order Snapshot</h3>
+                <div id="cart-items-summary">
+                    <!-- Cart items -->
+                </div>
+                <div class="summary-total"
+                    style="border-top: 2px dashed #eee; padding-top: 2rem; margin-top: 2rem; display: flex; justify-content: space-between; font-size: 1.4rem;">
+                    <span>Grand Total:</span>
+                    <span id="summary-total-price" style="color: var(--primary-color);">$0.00</span>
+                </div>
+                <div
+                    style="margin-top: 1.5rem; background: #eaf8f1; border: 1px solid #c2ebd5; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+                    <i class="fa-solid fa-truck-fast" style="font-size: 1.8rem; color: #2ecc71;"></i>
+                    <div>
+                        <p style="margin: 0; font-weight: 600; color: #27ae60; font-size: 1rem;">Estimated Delivery</p>
+                        <p style="margin: 0; font-size: 0.9rem; color: #2c3e50;">2–3 Business Days</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="payment-modal-overlay">
+        <div class="payment-modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2 style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Complete Payment via
+                <span id="selected-method-name" style="color: var(--primary-color);"></span>
+            </h2>
+
+            <div class="payment-details-container"
+                style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+
+                <div class="bank-details"
+                    style="font-size: 1rem; line-height: 1.6; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #eee; flex: 1; min-width: 250px;">
+                    <p style="margin-bottom: 8px;"><strong>Account Holder:</strong> MG IYYAPPAN</p>
+                    <p style="margin-bottom: 8px;"><strong>UPI ID:</strong> mgiyyappan@oksbi</p>
+                    <p style="color: #666; font-size: 0.85rem; margin-top: 10px;"><i
+                            class="fa-solid fa-circle-info"></i> Please ensure the exact amount is paid to process the
+                        order smoothly.</p>
+                </div>
+
+                <div class="qr-code-placeholder"
+                    style="width: 140px; height: 140px; background: #fff; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--primary-color); flex-direction: column; border-radius: 10px; margin: auto;">
+                    <i class="fa-solid fa-qrcode" style="font-size: 4rem; color: #444;"></i>
+                    <span style="font-size: 0.8rem; margin-top: 10px; font-weight: 500;">Scan to Pay</span>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 15px; background: #eaf8f1; padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fa-solid fa-truck-fast" style="color: #2ecc71;"></i>
+                <span style="font-size: 0.9rem; font-weight: 500; color: #27ae60;">Delivery Estimate: 2–3 Business
+                    Days</span>
+            </div>
+
+            <form id="payment-upload-form" style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 10px; font-weight: 500;">Upload Payment Screenshot
+                    (JPG/PNG)</label>
+                <input type="file" id="screenshot-input" accept="image/png, image/jpeg, image/jpg" required
+                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px;">
+                <div id="file-error" style="color: red; font-size: 0.85rem; margin-bottom: 10px; display: none;"></div>
+
+                <div id="image-preview"
+                    style="display: none; margin-bottom: 15px; width: 100%; max-height: 200px; overflow: hidden; border-radius: 8px; border: 1px solid #eee;">
+                    <img id="preview-img" src="" style="width: 100%; height: auto; object-fit: contain;">
+                </div>
+
+                <button type="submit" id="submit-proof-btn" class="btn-gradient"
+                    style="width: 100%; font-size: 1.1rem; padding: 15px;">
+                    <span id="proof-btn-text">Submit Payment Proof</span>
+                    <i id="proof-spinner" class="fa-solid fa-spinner fa-spin"
+                        style="display: none; margin-left:10px;"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .checkout-container {
+            padding: 4rem 8%;
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 4rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(255, 77, 109, 0.02);
+        }
+
+        .payment-option input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        .order-summary {
+            padding: 3rem;
+            position: sticky;
+            top: 120px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        .payment-modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-modal-content {
+            background-color: #fefefe;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            transform: scale(0.9);
+            animation: modalPop 0.3s forwards ease-out;
+        }
+
+        @keyframes modalPop {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .close-modal {
+            color: #aaa;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .btn-payment-method:hover {
+            border-color: var(--primary-color) !important;
+            background-color: rgba(255, 77, 109, 0.05) !important;
+        }
+    </style>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (!user) {
+                alert('Session expired. Please sign in to finalize your purchase.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (cart.length === 0) {
+                document.getElementById('cart-items-summary').innerHTML = '<p style="text-align: center; color: #888;">Your selection is empty.</p>';
+                return;
+            }
+
+            const itemsHtml = cart.map(item => `
+                <div class="summary-item">
+                    <span>${item.name} <strong style="color: #999;">x${item.qty}</strong></span>
+                    <span style="font-weight: 600;">₹${(item.price * item.qty).toLocaleString('en-IN')}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('cart-items-summary').innerHTML = itemsHtml;
+
+            const total = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+            document.getElementById('summary-total-price').textContent = `₹${total.toLocaleString('en-IN')}`;
+
+            let selectedOnlineMethod = null;
+
+            // Handle Payment Options display
+            const paymentRadios = document.querySelectorAll('input[name="payment"]');
+            const onlinePaymentMethods = document.getElementById('online-payment-methods');
+            const finalizeSubmitBtn = document.querySelector('button[type="submit"]');
+
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.value === 'Online Payment') {
+                        onlinePaymentMethods.style.display = 'flex';
+                        finalizeSubmitBtn.style.display = 'none'; // Hide submit, use method buttons
+                    } else {
+                        onlinePaymentMethods.style.display = 'none';
+                        finalizeSubmitBtn.style.display = 'block';
+                    }
+                });
+            });
+
+            // Handle Online Method Click
+            const methodBtns = document.querySelectorAll('.btn-payment-method');
+            const paymentModal = document.getElementById('payment-modal');
+            const selectedMethodName = document.getElementById('selected-method-name');
+
+            methodBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Check if form is valid before opening modal
+                    const form = document.getElementById('payment-form');
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return;
+                    }
+
+                    selectedOnlineMethod = btn.getAttribute('data-method');
+                    selectedMethodName.textContent = selectedOnlineMethod;
+                    paymentModal.style.display = 'flex';
+                });
+            });
+
+            // Close Modal
+            document.getElementById('close-modal').addEventListener('click', () => {
+                paymentModal.style.display = 'none';
+            });
+
+            // Image Preview & Validation
+            const screenshotInput = document.getElementById('screenshot-input');
+            const imagePreview = document.getElementById('image-preview');
+            const previewImg = document.getElementById('preview-img');
+            const fileError = document.getElementById('file-error');
+
+            screenshotInput.addEventListener('change', function () {
+                const file = this.files[0];
+                fileError.style.display = 'none';
+
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                        fileError.textContent = 'File size is too large (max 5MB).';
+                        fileError.style.display = 'block';
+                        this.value = '';
+                        imagePreview.style.display = 'none';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImg.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.style.display = 'none';
+                }
+            });
+
+            // Handle Payment Proof Submission
+            document.getElementById('payment-upload-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const file = screenshotInput.files[0];
+                if (!file) {
+                    fileError.textContent = 'Please provide a screenshot.';
+                    fileError.style.display = 'block';
+                    return;
+                }
+
+                const uploadBtnText = document.getElementById('proof-btn-text');
+                const uploadSpinner = document.getElementById('proof-spinner');
+                const submitProofBtn = document.getElementById('submit-proof-btn');
+
+                uploadBtnText.textContent = 'Verifying...';
+                uploadSpinner.style.display = 'inline-block';
+                submitProofBtn.disabled = true;
+
+                const formData = new FormData();
+                formData.append('screenshot', file);
+
+                try {
+                    // 1. Upload Screenshot
+                    const uploadRes = await fetch('http://localhost:5000/api/orders/upload-payment', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!uploadRes.ok) throw new Error('Failed to upload image');
+                    const uploadData = await uploadRes.json();
+
+                    // 2. Place Order with image path
+                    await placeOrder('Online Payment', 'Success', uploadData.imagePath);
+
+                    paymentModal.style.display = 'none';
+                } catch (err) {
+                    fileError.textContent = err.message || 'Upload connection interrupted.';
+                    fileError.style.display = 'block';
+                    uploadBtnText.textContent = 'Submit Payment Proof';
+                    uploadSpinner.style.display = 'none';
+                    submitProofBtn.disabled = false;
+                }
+            });
+
+            // Form Submit for COD
+            document.getElementById('payment-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const method = document.querySelector('input[name="payment"]:checked').value;
+                if (method === 'COD') {
+                    placeOrder('COD', 'Pending', null);
+                }
+            });
+
+            async function placeOrder(paymentMethod, paymentStatus, paymentScreenshot) {
+                const orderData = {
+                    user: user._id,
+                    orderItems: cart.map(item => ({
+                        name: item.name,
+                        qty: item.qty,
+                        image: item.image,
+                        price: item.price,
+                        product: item._id
+                    })),
+                    shippingAddress: {
+                        address: document.getElementById('address').value,
+                        city: document.getElementById('city').value,
+                        postalCode: document.getElementById('postalCode').value,
+                        country: document.getElementById('country').value
+                    },
+                    paymentMethod: paymentMethod,
+                    paymentStatus: paymentStatus,
+                    paymentScreenshot: paymentScreenshot,
+                    totalPrice: total
+                };
+
+                try {
+                    const res = await fetch('http://localhost:5000/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    if (res.ok) {
+                        if (paymentMethod === 'COD') {
+                            alert('Order Placed Successfully via COD! Delivery expected within 2-3 business days.');
+                        } else {
+                            alert('Payment submitted successfully.\nYour payment is under verification.\nOrder will be confirmed within 2–3 business days.');
+                        }
+
+                        localStorage.removeItem('cart');
+                        window.location.href = 'orders.html';
+                    } else {
+                        const error = await res.json();
+                        alert(error.message);
+                    }
+                } catch (err) {
+                    alert('Server connection interrupted while placing order.');
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

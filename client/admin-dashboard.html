@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Nostra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="background: var(--light-bg);">
+    <nav class="navbar scrolled">
+        <h1>NOSTRA <span
+                style="font-size: 0.8rem; background: var(--gradient-primary); padding: 2px 8px; border-radius: 4px; color: white;">ADMIN</span>
+        </h1>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">View Shop</a>
+        </div>
+        <div class="navbar-icons">
+            <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+        </div>
+    </nav>
+
+    <div class="checkout-container" style="padding-top: 8rem;">
+        <div class="section-title">
+            <h2>Product Management</h2>
+            <p>Add new styles to the Nostra collection</p>
+        </div>
+
+        <div class="auth-card" style="max-width: 800px; margin: 2rem auto;">
+            <form id="add-product-form">
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" name="name" placeholder="e.g. Silk Summer Shirt" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" name="price" placeholder="e.g. 1299" required>
+                    </div>
+                </div>
+
+                <div class="form-row"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category"
+                            style="width: 100%; padding: 1rem; border: 2px solid #eee; border-radius: 12px; outline: none;"
+                            required>
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                            <option value="Footwear">Footwear</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Image Filename</label>
+                        <input type="text" name="image" placeholder="e.g. shirt1.jpg" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Description</label>
+                    <textarea name="description" placeholder="Describe the premium details..."
+                        style="width: 100%; padding: 1rem; border: 2px solid #eee; border-radius: 12px; height: 100px;"
+                        required></textarea>
+                </div>
+
+                <button type="submit" class="btn-gradient" style="width: 100%; margin-top: 2rem;">Publish to
+                    Shop</button>
+            </form>
+        </div>
+
+        <div class="section-title" style="margin-top: 5rem;">
+            <h3>Live Products</h3>
+        </div>
+        <div id="admin-product-list" class="product-grid">
+            <!-- Products listed here -->
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            // Protect Route
+            if (!user || user.role !== 'admin') {
+                alert('Access Denied. Admin privileges required.');
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            const form = document.getElementById('add-product-form');
+            const productList = document.getElementById('admin-product-list');
+
+            // Fetch current products
+            const fetchAdminProducts = async () => {
+                const res = await fetch('http://localhost:5000/api/products');
+                const products = await res.json();
+                productList.innerHTML = products.map(p => {
+                    const imageUrl = p.image.startsWith('http') ? p.image : `images/${p.image}`;
+                    return `
+                        <div class="product-card" style="position: relative;">
+                            <button onclick="deleteProduct('${p._id}')" 
+                                style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <div class="product-img-container">
+                                <img src="${imageUrl}" alt="${p.name}">
+                            </div>
+                            <div class="product-info">
+                                <h3>${p.name}</h3>
+                                <p class="price">₹${p.price.toLocaleString('en-IN')}</p>
+                                <p style="font-size: 0.8rem; color: #888;">${p.category}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            };
+
+            // Delete Product
+            window.deleteProduct = async (id) => {
+                if (!confirm('Are you sure you want to remove this product?')) return;
+
+                try {
+                    const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${user.token}`
+                        }
+                    });
+
+                    if (res.ok) {
+                        alert('Product removed successfully!');
+                        fetchAdminProducts();
+                    } else {
+                        const err = await res.json();
+                        alert('Error: ' + err.message);
+                    }
+                } catch (err) {
+                    alert('Server error.');
+                }
+            };
+
+            fetchAdminProducts();
+
+            // Add Product
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const data = {
+                    name: formData.get('name'),
+                    price: Number(formData.get('price')),
+                    category: formData.get('category'),
+                    image: formData.get('image'),
+                    description: formData.get('description')
+                };
+
+                try {
+                    const res = await fetch('http://localhost:5000/api/products', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (res.ok) {
+                        alert('Product added successfully!');
+                        form.reset();
+                        fetchAdminProducts();
+                    } else {
+                        const err = await res.json();
+                        alert('Error: ' + err.message);
+                    }
+                } catch (err) {
+                    alert('Server error.');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

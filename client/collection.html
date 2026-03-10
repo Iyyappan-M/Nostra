@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Collection | Nostra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar scrolled" id="navbar">
+        <h1>NOSTRA</h1>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">Home</a>
+            <a href="collection.html" class="navbar-link">Collection</a>
+            <a href="contact.html" class="navbar-link">Contact</a>
+        </div>
+        <div class="navbar-icons">
+            <a href="login.html" id="login-link"><i class="fa-solid fa-user"></i></a>
+
+            <div class="profile-container" id="profile-container" style="display: none;">
+                <div class="profile-icon" id="profile-icon"></div>
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <span class="dropdown-item" id="user-email-display"
+                        style="font-weight: 600; border-bottom: 1px solid #eee;"></span>
+                    <a href="checkout.html" class="dropdown-item"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+                    <a href="orders.html" class="dropdown-item"><i class="fa-solid fa-box-open"></i> My Orders</a>
+                    <a href="#" class="dropdown-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="section" style="padding-top: 10rem;">
+        <div class="section-title">
+            <h2>The Premium Collection</h2>
+            <p>Curated styles for those who dare to stand out.</p>
+        </div>
+
+        <div style="max-width: 600px; margin: 0 auto 4rem; position: relative;">
+            <input type="text" id="search-input" placeholder="Search for styles..."
+                style="width: 100%; padding: 1.2rem 2rem; border-radius: 50px; border: 2px solid #eee; outline: none; box-shadow: var(--card-shadow);">
+            <i class="fa-solid fa-magnifying-glass"
+                style="position: absolute; right: 2rem; top: 1.4rem; color: var(--secondary-color);"></i>
+        </div>
+
+        <div id="product-grid" class="product-grid">
+            <!-- Dynamic products -->
+            <p style="text-align: center; grid-column: 1/-1;">Analyzing trends and loading styles...</p>
+        </div>
+    </section>
+
+    <footer>
+        <div style="text-align: center;">
+            <p>&copy; 2024 Nostra Fashion Group. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>
