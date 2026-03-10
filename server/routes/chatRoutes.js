@@ -1,69 +1,69 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Configure Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-// Store Context for LLM
-const STORE_CONTEXT = `
-You are "Nostra Assistant", an AI fashion expert for Nostra, a premium MERN e-commerce platform.
-Your goals:
-1. Help with navigation: Home (index.html), Collection (collection.html), Contact (contact.html), Login (login.html), Subscription (subscribe.html).
-2. Subscription Plans: 
-   - Basic (1 Month): ₹200
-   - Popular (3 Months): ₹400
-   - Professional (6 Months): ₹600
-   - Best Value (Annual): ₹1000.
-3. Order Help: Users can see orders in orders.html after login.
-4. Product Info: We sell premium Men, Women clothes, Footwear, and Accessories.
-5. Voice: Professional, helpful, stylish, and concise.
-
-If the user asks for products, try to match categories (Men, Women, Footwear, Accessories). 
-Always refer to the website in a premium way.
-`;
-
-// @route POST /api/chat/ask
-// @desc Chat with Gemini AI
-router.post('/ask', async (req, res) => {
+// @route POST /api/chat/search
+// @desc Search products via chatbot
+router.post('/search', async (req, res) => {
     try {
-        const { message, chatHistory } = req.body;
-        
-        if (!process.env.GEMINI_API_KEY) {
-            return res.json({ 
-                reply: "Gemini API Key is missing in the backend. Please add it to your .env file!",
-                error: true 
+        const { message } = req.body;
+        if (!message) {
+            return res.status(400).json({ message: 'Message is required' });
+        }
+
+        const query = message.toLowerCase();
+        let filter = {};
+
+        // 1. Category Detection
+        if (query.includes('men') && !query.includes('women')) {
+            filter.category = 'Men';
+        } else if (query.includes('women')) {
+            filter.category = 'Women';
+        } else if (query.includes('footwear') || query.includes('shoes') || query.includes('sneakers')) {
+            filter.category = 'Footwear';
+        } else if (query.includes('accessories') || query.includes('bag') || query.includes('watch')) {
+            filter.category = 'Accessories';
+        }
+
+        // 2. Price Detection (e.g., "under 100", "below 500")
+        const priceMatch = query.match(/(?:under|below|less than)\s*(\d+)/);
+        if (priceMatch) {
+            filter.price = { $lt: parseInt(priceMatch[1]) };
+        }
+
+        // 3. Keyword Detection (Name/Description)
+        // Remove common words and focus on product keywords
+        const keywords = query
+            .replace(/show me|i want|find|search for|under \d+|below \d+|men|women/g, '')
+            .trim()
+            .split(' ')
+            .filter(word => word.length > 2);
+
+        if (keywords.length > 0) {
+            filter.$or = [
+                { name: { $regex: keywords.join('|'), $options: 'i' } },
+                { description: { $regex: keywords.join('|'), $options: 'i' } }
+            ];
+        }
+
+        // Search the database
+        const products = await Product.find(filter).limit(5);
+
+        if (products.length > 0) {
+            res.json({
+                reply: `I found ${products.length} products for you!`,
+                products: products
+            });
+        } else {
+            res.json({
+                reply: "Sorry, I couldn't find any products matching that. Try searching for things like 'Black jackets' or 'Women dresses under 100'.",
+                products: []
             });
         }
 
-        // Fetch products if user is asking about item types
-        let products = [];
-        const lowerMsg = message.toLowerCase();
-        if (lowerMsg.includes('show') || lowerMsg.includes('find') || lowerMsg.includes('buy') || lowerMsg.includes('product') || lowerMsg.includes('shirt') || lowerMsg.includes('dress')) {
-            let filter = {};
-            if (lowerMsg.includes('men')) filter.category = 'Men';
-            else if (lowerMsg.includes('women')) filter.category = 'Women';
-            else if (lowerMsg.includes('footwear') || lowerMsg.includes('shoe')) filter.category = 'Footwear';
-            
-            products = await Product.find(filter).limit(3);
-        }
-
-        const prompt = `${STORE_CONTEXT}\n\nUser: ${message}\nAssistant:`;
-        
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-
-        res.json({
-            reply: text,
-            products: products
-        });
-
     } catch (error) {
-        console.error('GEMINI CHAT ERROR:', error);
-        res.status(500).json({ reply: "I'm having trouble connecting to my creative brain right now. Try again in a bit!" });
+        console.error('CHAT SEARCH ERROR:', error);
+        res.status(500).json({ message: 'Chat service temporarily unavailable' });
     }
 });
 

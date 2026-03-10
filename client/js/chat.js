@@ -1,138 +1,162 @@
 const API_BASE_CHAT = window.location.protocol === 'file:' ? 'https://nostra-z943.onrender.com' : '';
 
+console.log('Chatbot: Initializing with API_BASE:', API_BASE_CHAT);
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Inject Gemini Chatbot HTML with White & Green Theme
+    // Inject Chatbot HTML
     const chatHTML = `
-        <div class="gemini-chat-container">
-            <div class="chat-widget-btn" id="chat-btn" style="background: #2ecc71; box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);">
-                <i class="fa-solid fa-sparkles" style="margin-right: 5px;"></i>
-                <span>Ask AI</span>
+        <div class="chat-widget-btn" id="chat-btn">
+            <i class="fa-solid fa-comment-dots"></i>
+            <div class="unread-dot"></div>
+        </div>
+
+        <div class="chat-modal" id="chat-modal">
+            <div class="chat-header">
+                <h3><i class="fa-solid fa-robot"></i> Nostra Assistant</h3>
+                <div class="chat-close" id="chat-close"><i class="fa-solid fa-xmark"></i></div>
             </div>
-
-            <div class="chat-modal" id="chat-modal">
-                <div class="chat-header" style="background: #2ecc71;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="width: 35px; height: 35px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2ecc71;">
-                            <i class="fa-solid fa-robot"></i>
-                        </div>
-                        <div>
-                            <h3 style="margin: 0; font-size: 1rem;">Nostra Gemini AI</h3>
-                            <span style="font-size: 0.7rem; opacity: 0.8;">Always active to help you</span>
-                        </div>
-                    </div>
-                    <div class="chat-close" id="chat-close"><i class="fa-solid fa-xmark"></i></div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    Hello! I'm your Nostra Assistant. How can I help you today? 
+                    <br><br>
+                    Try asking: <b>"Show me men jackets"</b> or <b>"Women dresses under 100"</b>
                 </div>
-                
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message bot">
-                        Hi there! 👋 I'm your **Nostra Gemini AI** assistant. 
-                        I can help you find products, explain our subscription plans, or navigate the boutique. 
-                        What's on your mind?
-                    </div>
-                </div>
-
-                <div id="typing-indicator" style="display: none; padding: 0 1.5rem 1rem; font-size: 0.8rem; color: #888;">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> Gemini is thinking...
-                </div>
-
-                <form class="chat-input-area" id="chat-form">
-                    <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
-                    <button type="submit" class="chat-send-btn" style="background: #2ecc71;">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </form>
             </div>
+            <form class="chat-input-area" id="chat-form">
+                <input type="text" id="chat-input" placeholder="Ask me anything..." autocomplete="off">
+                <button type="submit" class="chat-send-btn">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
         </div>
     `;
     
-    // Remove existing if any
-    const oldBtns = document.querySelectorAll('.chat-widget-btn, .chat-modal');
-    oldBtns.forEach(el => el.remove());
+    // Cleanup any existing ones
+    const existing = document.querySelectorAll('.chat-widget-btn, .chat-modal');
+    existing.forEach(e => {
+        console.log('Chatbot: Removing old element', e.className);
+        e.remove();
+    });
     
     document.body.insertAdjacentHTML('beforeend', chatHTML);
 
     const chatBtn = document.getElementById('chat-btn');
+    const navbarChatBtn = document.getElementById('navbar-chat-btn');
     const chatModal = document.getElementById('chat-modal');
     const chatClose = document.getElementById('chat-close');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
-    const typingIndicator = document.getElementById('typing-indicator');
+
+    if (!chatBtn || !chatModal) {
+        console.error('Chatbot: Failed to find critical UI elements after injection.');
+        return;
+    }
 
     // Toggle Chat
-    chatBtn.addEventListener('click', () => {
-        chatModal.classList.toggle('active');
-        if (chatModal.classList.contains('active')) {
-            chatInput.focus();
-        }
-    });
+    const toggleChat = () => {
+        console.log('Chatbot: Toggling window');
+        chatModal.classList.add('active');
+        const unread = document.querySelector('.chat-widget-btn .unread-dot');
+        if (unread) unread.style.display = 'none';
+        chatInput.focus();
+    };
+
+    chatBtn.addEventListener('click', toggleChat);
+    if (navbarChatBtn) {
+        navbarChatBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleChat();
+        });
+    }
 
     chatClose.addEventListener('click', () => {
         chatModal.classList.remove('active');
     });
 
-    // Handle Submit
+    // Handle Send
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const msg = chatInput.value.trim();
         if (!msg) return;
 
+        console.log('Chatbot: Sending message:', msg);
+
+        // Add User Message
         appendMessage('user', msg);
         chatInput.value = '';
-        
-        // Show typing
-        typingIndicator.style.display = 'block';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Add Loading State
+        const loadingId = appendMessage('bot', '<i class="fa-solid fa-ellipsis fa-beat"></i> Thinking...');
 
         try {
-            const res = await fetch(`${API_BASE_CHAT}/api/chat/ask`, {
+            const endpoint = `${API_BASE_CHAT}/api/chat/search`;
+            console.log('Chatbot: Fetching from:', endpoint);
+
+            const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: msg })
             });
 
-            const data = await res.json();
-            typingIndicator.style.display = 'none';
-
-            if (data.reply) {
-                appendMessage('bot', data.reply);
+            if (!res.ok) {
+                throw new Error(`Server responded with ${res.status}`);
             }
 
+            const data = await res.json();
+
+            // Remove Loading
+            const loadingEl = document.getElementById(loadingId);
+            if (loadingEl) loadingEl.remove();
+
             if (data.products && data.products.length > 0) {
+                appendMessage('bot', data.reply);
                 appendProducts(data.products);
+            } else {
+                appendMessage('bot', data.reply || "Sorry, I couldn't find any products.");
             }
 
         } catch (err) {
-            typingIndicator.style.display = 'none';
-            appendMessage('bot', "I'm sorry, I'm having trouble connecting to my Gemini core. Please check your internet or try again later.");
+            console.error('Chatbot Error:', err);
+            const loadingEl = document.getElementById(loadingId);
+            if (loadingEl) loadingEl.remove();
+            
+            if (err.message.includes('404')) {
+                appendMessage('bot', "The chat server is currently updating. Please wait a minute while we deploy the fashion circuits!");
+            } else {
+                appendMessage('bot', "Oops! My fashion circuit is down. Please try again later or check if you're connected to the internet.");
+            }
         }
     });
 
     function appendMessage(sender, text) {
+        const id = 'msg-' + Date.now();
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${sender}`;
-        // Simple markdown-like bolding support
-        const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-        msgDiv.innerHTML = formattedText;
+        msgDiv.id = id;
+        msgDiv.innerHTML = text;
         chatMessages.appendChild(msgDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        return id;
     }
 
     function appendProducts(products) {
         const listDiv = document.createElement('div');
         listDiv.className = 'chat-product-list';
+
         products.forEach(p => {
             const imageUrl = p.image.startsWith('http') ? p.image : `images/${p.image}`;
             listDiv.innerHTML += `
-                <a href="collection.html" class="chat-product-card" style="border-left: 3px solid #2ecc71;">
+                <a href="collection.html" class="chat-product-card">
                     <img src="${imageUrl}" alt="${p.name}">
                     <div class="chat-product-info">
-                        <h4 style="margin:0; font-size: 0.9rem;">${p.name}</h4>
-                        <p class="price" style="color: #2ecc71; margin:0; font-weight:700;">₹${p.price.toLocaleString('en-IN')}</p>
+                        <h4>${p.name}</h4>
+                        <p class="price">₹${p.price.toLocaleString('en-IN')}</p>
                     </div>
                 </a>
             `;
         });
+
         chatMessages.appendChild(listDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
