@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Sending data:', { email, password: '***' });
 
             try {
-                const res = await fetch('https://nostra-z943.onrender.com/api/auth/login', {
+                const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Sending data:', { name, email, password: '***' });
 
             try {
-                const res = await fetch('https://nostra-z943.onrender.com/api/auth/register', {
+                const res = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -220,7 +220,7 @@ function checkLoginStatus() {
 async function fetchProducts() {
     const productGrid = document.getElementById('product-grid');
     try {
-        const res = await fetch('https://nostra-z943.onrender.com/api/products');
+        const res = await fetch('/api/products');
         const products = await res.json();
 
         if (products.length === 0) {
@@ -295,7 +295,7 @@ function exploreCollection() {
 async function fetchHomeProducts() {
     const homeProductGrid = document.querySelector('.product-grid');
     try {
-        const res = await fetch('https://nostra-z943.onrender.com/api/products');
+        const res = await fetch('/api/products');
         let products = await res.json();
 
         // Take first 4 for home page arrivals
@@ -322,7 +322,7 @@ async function fetchHomeProducts() {
 
 async function fetchStoreDetails() {
     try {
-        const res = await fetch('https://nostra-z943.onrender.com/api/store');
+        const res = await fetch('/api/store');
         if (!res.ok) return;
         const store = await res.json();
 
