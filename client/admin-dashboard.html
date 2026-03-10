@@ -20,7 +20,7 @@
             <a href="index.html" class="navbar-link">View Shop</a>
         </div>
         <div class="navbar-icons">
-            <a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+            <a href="#" id="admin-logout-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
         </div>
     </nav>
     <!-- Mobile Side Navbar -->
@@ -99,10 +99,27 @@
             const user = JSON.parse(localStorage.getItem('user'));
 
             // Protect Route
-            if (!user || user.role !== 'admin') {
-                alert('Access Denied. Admin privileges required.');
-                window.location.href = 'admin-login.html';
+            if (!user || (user.role !== 'admin' && !user.isSubscribed)) {
+                if (!user) {
+                    window.location.href = 'admin-login.html';
+                } else if (!user.isSubscribed) {
+                    alert('Please subscribe to add products.');
+                    window.location.href = 'subscribe.html';
+                } else {
+                    alert('Access Denied. Admin privileges required.');
+                    window.location.href = 'index.html';
+                }
                 return;
+            }
+
+            // Logout Logic
+            const adminLogout = document.getElementById('admin-logout-btn');
+            if(adminLogout) {
+                adminLogout.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('user');
+                    window.location.href = 'index.html';
+                });
             }
 
             const form = document.getElementById('add-product-form');
@@ -110,7 +127,7 @@
 
             // Fetch current products
             const fetchAdminProducts = async () => {
-                const res = await fetch('https://nostra-z943.onrender.com/api/products');
+                const res = await fetch('/api/products');
                 const products = await res.json();
                 window.adminProducts = products;
                 productList.innerHTML = products.map(p => {
@@ -143,7 +160,7 @@
                 if (!confirm('Are you sure you want to remove this product?')) return;
 
                 try {
-                    const res = await fetch(`https://nostra-z943.onrender.com/api/products/${id}`, {
+                    const res = await fetch(`/api/products/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Authorization': `Bearer ${user.token}`
@@ -207,7 +224,7 @@
                 };
 
                 const isEdit = !!window.editingProductId;
-                const url = isEdit ? `https://nostra-z943.onrender.com/api/products/${window.editingProductId}` : 'https://nostra-z943.onrender.com/api/products';
+                const url = isEdit ? `/api/products/${window.editingProductId}` : '/api/products';
                 const method = isEdit ? 'PUT' : 'POST';
 
                 try {
@@ -240,4 +257,3 @@
 </body>
 
 </html>
-

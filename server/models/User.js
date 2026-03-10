@@ -40,6 +40,13 @@ const userSchema = new mongoose.Schema({
     profileCompleted: {
         type: Boolean,
         default: false
+    },
+    isSubscribed: {
+        type: Boolean,
+        default: false
+    },
+    subscriptionProof: {
+        type: String
     }
 }, {
     timestamps: true

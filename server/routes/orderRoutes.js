@@ -16,15 +16,15 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage,
     fileFilter: function (req, file, cb) {
-        const filetypes = /jpg|jpeg|png/;
-        const mimetypes = /image\/jpeg|image\/png/;
+        const filetypes = /jpg|jpeg|png|pdf/;
+        const mimetypes = /image\/jpeg|image\/png|application\/pdf/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = mimetypes.test(file.mimetype);
 
         if (extname && mimetype) {
             return cb(null, true);
         } else {
-            cb(new Error('Images only! (jpg/png)'));
+            cb(new Error('Images or PDFs only! (jpg/png/pdf)'));
         }
     }
 });

@@ -52,6 +52,7 @@ router.post('/register', async (req, res) => {
             email: user.email,
             role: user.role,
             profileCompleted: user.profileCompleted,
+            isSubscribed: user.isSubscribed,
             token: generateToken(user._id),
         });
 
@@ -81,6 +82,7 @@ router.post('/login', async (req, res) => {
                 email: user.email,
                 role: user.role,
                 profileCompleted: user.profileCompleted,
+                isSubscribed: user.isSubscribed,
                 token: generateToken(user._id),
             });
         } else {
@@ -122,6 +124,7 @@ router.put('/profile', async (req, res) => {
             email: user.email,
             role: user.role,
             profileCompleted: user.profileCompleted,
+            isSubscribed: user.isSubscribed,
             gender: user.gender,
             ageCategory: user.ageCategory,
             preference: user.preference,
@@ -133,4 +136,40 @@ router.put('/profile', async (req, res) => {
     }
 });
 
+// @route PUT /api/auth/subscribe-proof
+router.put('/subscribe-proof', async (req, res) => {
+    try {
+        const { userId, subscriptionProof } = req.body;
+
+        if (!userId || !subscriptionProof) {
+            return res.status(400).json({ message: 'User ID and proof are required' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.isSubscribed = true;
+        user.subscriptionProof = subscriptionProof;
+
+        await user.save();
+        console.log('Subscription completed for user:', user._id);
+
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            profileCompleted: user.profileCompleted,
+            isSubscribed: user.isSubscribed,
+            token: generateToken(user._id),
+        });
+    } catch (error) {
+        console.error('SUBSCRIPTION ERROR:', error);
+        res.status(500).json({ message: error.message || 'Server Error' });
+    }
+});
+
 module.exports = router;
+
